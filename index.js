@@ -1,36 +1,37 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import cookieSession from 'cookie-session';
 import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+
 import keys from './config/keys';
+import authRoutes from './routes/authRoutes';
+
+// Put User first before passport so that user is
+// created before passport needs to use it
+import './models/User';
+import './services/passport';
+
+/*mongoose.connect(keys.mongoURI)
+  .then((req, res) => {console.log('Success!');})
+  .catch(error => {console.log('error:', error);});*/
+
+mongoose.connect(keys.mongoLocal);
 
 const app = express();
 
-passport.use(
-  new GoogleStrategy({
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback'
-  },
-    (accessToken, refreshToken, profile, done) => {
-      // Take user identifying information and save to DB
-      console.log('access token', accessToken);
-      console.log('refresh token', refreshToken);
-      console.log('profile:', profile);
-    }
-  )
-);
-
-// Make request to Google
-app.get('/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email']
+// Tell express to make use of cookies
+app.use(
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey]
   })
 );
 
-// Get callback from Google
-app.get('/auth/google/callback',
-  passport.authenticate('google')
-);
+// Tell passport to make use of cookies to handle authentication
+app.use(passport.initialize());
+app.use(passport.session());
+
+authRoutes(app);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
