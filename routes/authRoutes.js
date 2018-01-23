@@ -2,6 +2,7 @@ import passport from 'passport';
 
 export default app => {
   // Make request to Google
+  // Passport knows to look for 'google' service
   app.get('/auth/google',
     passport.authenticate('google', {
       scope: ['profile', 'email']
@@ -25,6 +26,12 @@ export default app => {
 
   app.get('/api/current_user', (req, res) => {
     // passport automatically attached the 'user' property to the 'req' object
+    /*
+        req.session: contains the data that passport is attempting
+                     to store inside of the cookie
+
+        ..Then passport looks at req.session (contains ID of user in DB)
+    */
     res.send(req.user);
   });
 }

@@ -7,6 +7,7 @@ import keys from '../config/keys';
 // Get users model out of mongoose
 const User = mongoose.model('users');
 
+// encode user id inside of the cookie..
 passport.serializeUser((user, done) => {
   // 'user.id' -> id in DB
   // Can't always assume they'll have a google id
