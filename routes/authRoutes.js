@@ -5,13 +5,18 @@ export default app => {
   // Passport knows to look for 'google' service
   app.get('/auth/google',
     passport.authenticate('google', {
-      scope: ['profile', 'email']
+      scope: ['profile', 'email'],
+      prompt: 'select_account'
     })
   );
 
   // Get callback from Google
-  app.get('/auth/google/callback',
-    passport.authenticate('google')
+  app.get(
+    '/auth/google/callback',
+    passport.authenticate('google'),
+    (req, res) => {
+      res.redirect('/surveys'); //direct to '/surveys' after authenticating
+    }
   );
 
   app.get('/api/logout', (req, res) => {
@@ -20,8 +25,7 @@ export default app => {
     // and deletes id inside it
     // IE removes req.user (user attached to passport)
     req.logout();
-
-    res.send(req.user);
+    res.redirect('/'); // on logout redirect user to homepage
   });
 
   app.get('/api/current_user', (req, res) => {

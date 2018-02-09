@@ -30,22 +30,19 @@ passport.use(
     proxy: true // just trust the proxy..
   },
     // Callback from oauth if succesful
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
       // Check to see if user in DB first
-      User.findOne({ googleId: profile.id })
-        .then(existingUser => {
-          if (existingUser) {
-            // we already have a record with the given profile ID
-            // done(error, userRecord)
-            done(null, existingUser);
-          }
-          else {
-            // We dont have a user record with this ID, make a new record
-            new User({ googleId: profile.id })
-              .save()
-              .then(user => done(null, user));
-          }
-        })
+      const existingUser = await User.findOne({ googleId: profile.id });
+
+      if (existingUser) {
+        // we already have a record with the given profile ID
+        // done(error, userRecord)
+        return done(null, existingUser);
+      }
+
+      // We dont have a user record with this ID, make a new record
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user);
     }
   )
 );
