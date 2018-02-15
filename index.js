@@ -5,14 +5,16 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import path from 'path';
 
-import keys from './config/keys';
-import authRoutes from './routes/authRoutes';
-import billingRoutes from "./routes/billingRoutes";
-
 // Put User first before passport so that user is
 // created before passport needs to use it
 import './models/User';
+import './models/Survey';
 import './services/passport';
+
+import keys from './config/keys';
+import authRoutes from './routes/authRoutes';
+import billingRoutes from "./routes/billingRoutes";
+import surveyRoutes from './routes/surveyRoutes';
 
 /*mongoose.connect(keys.mongoURI)
   .then((req, res) => {console.log('Success!');})
@@ -40,6 +42,7 @@ app.use(passport.session());
 
 authRoutes(app);
 billingRoutes(app);
+surveyRoutes(app);
 
 //Make sure this only runs in prod in heroku
 if (process.env.NODE_ENV === 'production') {

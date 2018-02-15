@@ -1,4 +1,5 @@
 import keys from '../config/keys';
+import { creditsAdd } from '../utils/credits';
 import requireLogin from '../middlewares/requireLogin';
 
 // use this as 'import' doesn't seem to work
@@ -14,7 +15,7 @@ export default app => {
       source: req.body.id
     });
 
-    req.user.credits += 5;
+    req.user.credits += creditsAdd;
     const user = await req.user.save();
 
     res.send(user);
