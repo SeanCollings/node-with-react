@@ -1,0 +1,39 @@
+.react-tagsinput {
+  border: 0px;
+  margin-bottom: -15px;
+  padding: 0;
+}
+
+/*.react-tagsinput-tag {
+  background-color: #009688;
+  border: 1px solid green;
+  color: white;
+}*/
+
+.react-tagsinput-tag {
+  background-color: lightgray;
+  border: 1px solid grey;
+  color: darkslategrey;
+}
+
+/*.react-tagsinput-tag-error {
+  background-color: #F44336;
+  border: 1px solid red;
+  color: white;
+}*/
+
+.react-tagsinput-tag a::before {
+  content: " ×";
+  color: darkslategrey;
+}
+
+/*.react-tagsinput-tag-error a::before {
+  content: " ×";
+  color: white;
+}*/
+
+.error-style {
+  margin-bottom: 20px !important;
+  border-bottom: 1px solid red !important;
+  box-shadow: 0 1px 0 0 red !important;
+}
