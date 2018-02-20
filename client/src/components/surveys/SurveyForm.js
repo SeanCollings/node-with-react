@@ -6,18 +6,12 @@ import { Link } from 'react-router-dom';
 
 import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmails';
-
-const FIELDS = [
-  { label: 'Survey Title', name: 'title', noValueError: 'a title' },
-  { label: 'Subject Line', name: 'subject', noValueError: 'a subject' },
-  { label: 'Email Body', name: 'body', noValueError: 'a body' },
-  { label: 'Recipient List', name: 'emails', noValueError: 'an email address' }
-];
+import formFields from './formFields';
 
 class SurveyForm extends Component {
   renderFields() {
-    //return _.map(FIELDS, ({ label, name }) => { });
-    return FIELDS.map(({ name, label }) => {
+    //return _.map(formFields, ({ label, name }) => { });
+    return formFields.map(({ name, label }) => {
       return (
         <Field
           key={name}
@@ -32,9 +26,12 @@ class SurveyForm extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit(values => console.log('form', values))}>
+        <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit /*() => this.props.onSur()*/)}>
           {this.renderFields()}
-          <Link to="/surveys" className="red btn btn-flat white-text">Cancel</Link>
+          <Link to="/surveys" className="red btn btn-flat white-text"
+            onClick={() => { this.props.destroy() }}>
+            Cancel
+          </Link>
           <button type="submit" className="teal btn-flat right white-text">
             Next
             <i className="material-icons right">done</i>
@@ -52,7 +49,7 @@ function validate(values) {
     errors.emails = validateEmails(values.emails || '');
   }
 
-  _.each(FIELDS, ({ name, noValueError }) => {
+  _.each(formFields, ({ name, noValueError }) => {
     if (!values[name]
       || (Array.isArray(values[name]) && values[name].length < 1)) {
       errors[name] = `You must provide ${noValueError}`;
@@ -64,5 +61,6 @@ function validate(values) {
 
 export default reduxForm({
   validate,
-  form: 'surveyForm'
+  form: 'surveyForm',
+  destroyOnUnmount: false
 })(SurveyForm);

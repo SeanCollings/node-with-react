@@ -35,6 +35,7 @@ class SurveyField extends Component {
           }}
           value={input.value || []}
           onChange={this.handleChange}
+          addKeys={[9, 13, 32, 186, 188]}
         />
       );
     }
