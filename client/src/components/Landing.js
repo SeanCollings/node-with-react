@@ -1,14 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
-const Landing = () => {
-  return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>
-        Emaily!
+class Landing extends Component {
+  displayButton() {
+    if (this.props.auth) {
+      return <Link to="/surveys" className="btn">Begin</Link>
+    }
+
+    return;
+  };
+
+  render() {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <h1>
+          Emaily!
       </h1>
-      Collect feedback from your users
-    </div>
-  );
-};
+        Collect feedback from your users
+        <div style={{ marginTop: '10px' }}>
+          {this.displayButton()}
+        </div>
+      </div>
+    );
+  };
+}
 
-export default Landing;
+function mapStateToProps({ auth }) {
+  return { auth };
+}
+
+export default connect(mapStateToProps)(Landing);

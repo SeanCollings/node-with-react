@@ -23,7 +23,7 @@ export default app => {
       title,
       subject,
       body,
-      recipients: recipients.split(',').map(email => ({ email })),
+      recipients: recipients.map(email => ({ email })),
       _user: req.user.id,
       dateSent: Date.now()
     });

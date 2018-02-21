@@ -24,7 +24,7 @@ class SurveyField extends Component {
   renderField = () => {
     const { input } = this.props;
 
-    if (input.name !== 'emails')
+    if (input.name !== 'recipients')
       return <input {...input} style={this.errorStyle()} />;
     else {
       return (

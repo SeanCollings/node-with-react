@@ -28,8 +28,7 @@ class SurveyForm extends Component {
       <div>
         <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit /*() => this.props.onSur()*/)}>
           {this.renderFields()}
-          <Link to="/surveys" className="red btn btn-flat white-text"
-            onClick={() => { this.props.destroy() }}>
+          <Link to="/surveys" className="red btn btn-flat white-text">
             Cancel
           </Link>
           <button type="submit" className="teal btn-flat right white-text">
@@ -46,7 +45,7 @@ function validate(values) {
   const errors = {};
 
   if (values.emails) {
-    errors.emails = validateEmails(values.emails || '');
+    errors.recipients = validateEmails(values.emails || '');
   }
 
   _.each(formFields, ({ name, noValueError }) => {
