@@ -12,9 +12,12 @@ import { creditsDeduct } from '../utils/credits';
 const Survey = mongoose.model('surveys');
 
 export default app => {
-  /*app.get('/api/surveys', async (req, res) => {
-    res.send(200);
-  });*/
+  app.get('/api/surveys', requireLogin, async (req, res) => {
+    const surveys = await Survey.find({ _user: req.user.id })
+      .select({ recipients: false });
+
+    res.send(surveys);
+  });
 
   app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     const choice = req.url.substr(req.url.lastIndexOf('/') + 1);
