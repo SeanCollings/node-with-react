@@ -18,7 +18,7 @@ export default survey => {
           ${survey.body}
           </p>
           <div>
-          <a href="${keys.redirectDomain}/api/surveys/thanks">
+          <a href="${keys.redirectDomain}/api/surveys/${survey.id}/yes">
             <button
             type="button"
             style="background-color: #4caf50; border: none;
@@ -27,7 +27,7 @@ export default survey => {
                   font-size: 14px; border-radius: 12px;">
               Yes
             </button></a>
-          <a href="${keys.redirectDomain}/api/surveys/thanks">
+          <a href="${keys.redirectDomain}/api/surveys/${survey.id}/no">
             <button type="button"
             style="background-color :#f44336; border: none;
                   color: white; padding: 10px 24px;

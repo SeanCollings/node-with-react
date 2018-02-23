@@ -25,7 +25,10 @@ class SurveyField extends Component {
     const { input } = this.props;
 
     if (input.name !== 'recipients')
-      return <input {...input} style={this.errorStyle()} />;
+      return <input {...input}
+        style={this.errorStyle()}
+        placeholder={`Add a ${input.name}`}
+      />;
     else {
       return (
         <TagsInput

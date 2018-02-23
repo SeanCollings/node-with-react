@@ -1,7 +1,11 @@
+import _ from 'lodash';
+import Path from 'path-parser';
+import { URL } from 'url';
 import mongoose from 'mongoose';
 import requireLogin from '../middlewares/requireLogin';
 import requireCredits from '../middlewares/requireCredits';
 import Mailer from '../services/Mailer';
+
 import surveyTemplate from '../services/emailTemplates/surveyTemplate';
 import { creditsDeduct } from '../utils/credits';
 // Get surveys model out of mongoose
@@ -11,10 +15,52 @@ export default app => {
   /*app.get('/api/surveys', async (req, res) => {
     res.send(200);
   });*/
-  app.get('/api/surveys/thanks', (req, res) => {
-    res.send('Thanks for voting!');
+
+  app.get('/api/surveys/:surveyId/:choice', (req, res) => {
+    const choice = req.url.substr(req.url.lastIndexOf('/') + 1);
+
+    if (choice === 'yes') {
+      res.send(`Thanks for voting! Your choice: ${choice}`);
+    }
+    else {
+      res.send(`Wow. \"Thanks\" for voting ${choice}... How sweet of you to say.
+      I see how it is. **unamused face ensues**`);
+    }
   });
 
+  app.post('/api/surveys/webhooks', (req, res) => {
+    const p = new Path('/api/surveys/:surveyId/:choice'); // Get values required from url
+
+    // lodash chain helper - add on any lodash function after each other
+    _.chain(req.body)
+      .map(({ email, url }) => {
+        const match = p.test(new URL(url).pathname);        // pathname gets '/api/surveys/:/:'
+
+        if (match) {
+          return { email, surveyId: match.surveyId, choice: match.choice };
+        }
+      })
+      .compact()                    //remove undefined elements
+      .uniqBy('email', 'surveyId')  //only keep values that are unique
+      .each(({ surveyId, email, choice }) => {              //update DB
+        Survey.updateOne(
+          {
+            _id: surveyId,
+            recipients: {
+              $elemMatch: { email: email, responded: false }
+            }
+          },
+          {
+            $inc: { [choice]: 1 }, //$inc - mongo operator. Find 'yes' OR 'no', increment by 1
+            $set: { 'recipients.$.responded': true },  //'&' matches $elemMatch of orig query
+            lastResponded: new Date()
+          }
+        ).exec();                 //execute
+      })
+      .value();                   //return array
+
+    res.send({});
+  });
 
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
     const { title, subject, body, recipients } = req.body;
