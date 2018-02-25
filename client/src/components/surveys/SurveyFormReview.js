@@ -7,7 +7,7 @@ import { withRouter } from 'react-router-dom';
 import formFields from './formFields';
 import * as actions from '../../actions';
 
-const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history } /*instead of 'props'*/) => {
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoader } /*instead of 'props'*/) => {
   const displayEmails = (name) => {
     let emailString = '';
 
@@ -19,7 +19,7 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history } /*inst
     });
 
     return emailString;
-  }
+  };
 
   const reviewFields = _.map(formFields, ({ name, label }) => {
     return (
@@ -32,6 +32,11 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history } /*inst
     );
   });
 
+  const submitClick = () => {
+    showLoader({ show: true, message: 'Sending survey...' });
+    submitSurvey(formValues, history);
+  };
+
   return (
     <div>
       <h5>Please confirm your entries</h5>
@@ -42,7 +47,7 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history } /*inst
         Back
       </button>
       <button
-        onClick={() => submitSurvey(formValues, history)}
+        onClick={() => submitClick()}
         className="green btn-flat right white-text"
       >
         Send Survey

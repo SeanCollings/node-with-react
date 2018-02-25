@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, FETCH_SURVEYS } from './types';
+import { FETCH_USER, FETCH_SURVEYS, SHOW_LOADER } from './types';
 
 //* If redux-thunk sees a function returned from this middleware
 //  r-t will automatically call this function and pass in dispatch as an arg
@@ -37,4 +37,8 @@ export const fetchSurveys = () => async dispatch => {
   const res = await axios.get('/api/surveys');
 
   dispatch({ type: FETCH_SURVEYS, payload: res.data });
+};
+
+export const showLoader = (show) => dispatch => {
+  dispatch({ type: SHOW_LOADER, payload: show });
 };
