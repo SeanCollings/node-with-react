@@ -5,12 +5,12 @@ import keys from '../config/keys';
 const helper = sendgrid.mail;*/
 
 class Mailer extends helper.Mail {
-  constructor({ subject, recipients }, content) {
+  constructor({ subject, field, recipients }, content) {
     super();
 
     // Do this way because this is what SendGrid requires
     this.sgApi = sendgrid(keys.sendGridKey);
-    this.from_email = new helper.Email('noreply@emaily.com');
+    this.from_email = new helper.Email(field/*'noreply@emaily.com'*/);
     this.subject = subject;
     this.body = new helper.Content('text/html', content);
     this.recipients = this.formatAddresses(recipients);

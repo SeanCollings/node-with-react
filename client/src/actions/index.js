@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, FETCH_SURVEYS, SHOW_LOADER } from './types';
+import { FETCH_USER, FETCH_SURVEYS, SHOW_LOADER, SHOW_MODAL } from './types';
 
 //* If redux-thunk sees a function returned from this middleware
 //  r-t will automatically call this function and pass in dispatch as an arg
@@ -47,3 +47,7 @@ export const deleteSurvey = (surveyId) => async dispatch => {
   const res = await axios.delete('/api/surveys/delete', { params: { surveyId } });
   dispatch({ type: FETCH_SURVEYS, payload: res.data });
 };
+
+export const creditsRequired = (show) => dispatch => {
+  dispatch({ type: SHOW_MODAL, payload: show });
+}

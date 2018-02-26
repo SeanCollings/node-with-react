@@ -3,13 +3,12 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-//import Payments from './Payments';
 
-//import ConfirmModal from '../modals/ConfirmModal';
 import formFields from './formFields';
 import * as actions from '../../actions';
+import SurveyCreditCheck from './SurveyCreditCheck';
 
-const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoader, auth } /*instead of 'props'*/) => {
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoader, creditsRequired, auth } /*instead of 'props'*/) => {
   const displayEmails = (name) => {
     let emailString = '';
 
@@ -39,19 +38,8 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoa
       showLoader({ show: true, message: 'Sending survey...' });
       submitSurvey(formValues, history);
     }
-    else { }
+    else { creditsRequired(true); }
   };
-
-  const showModal = () => {
-    /*return (
-      <ConfirmModal
-        closeModal={this.closeModal}
-        open={this.state.open}
-        header="Delete Survey"
-        body="This will delete the selected survey."
-      />
-    );*/
-  }
 
   return (
     <div>
@@ -69,7 +57,7 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoa
         Send Survey
         <i className="material-icons right">email</i>
       </button>
-      {showModal()}
+      <SurveyCreditCheck />
     </div>
   );
 }

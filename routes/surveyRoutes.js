@@ -66,12 +66,13 @@ export default app => {
   });
 
   app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
-    const { title, subject, body, recipients } = req.body;
+    const { title, subject, body, field, recipients } = req.body;
 
     const survey = new Survey({
       title,
       subject,
       body,
+      field,
       recipients: recipients.map(email => ({ email })),
       _user: req.user.id,
       dateSent: Date.now()

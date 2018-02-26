@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import Modal from 'react-awesome-modal';
 
+import Payments from '../Payments';
+
 class ConfirmModal extends Component {
   constructor() {
     super();
@@ -9,6 +11,38 @@ class ConfirmModal extends Component {
 
   close(confirmed) {
     this.props.closeModal(confirmed);
+  }
+
+  renderNo() {
+    return (
+      <button
+        className="btn btn-flat red white-text btn-margin"
+        onClick={() => this.close(false)}
+      >
+        No
+    </button>
+    );
+  }
+
+  showButton() {
+    if (!this.props.mode) {
+      return (
+        <div>
+          {this.renderNo()}
+          <button
+            className="btn btn-flat teal white-text btn-margin"
+            onClick={() => this.close(true)}
+          >
+            Yes
+        </button>
+        </div>
+      );
+    }
+
+    return <div onClick={() => this.close(false)}>
+      {this.renderNo()}
+      <Payments />
+    </div>;
   }
 
   render() {
@@ -26,20 +60,9 @@ class ConfirmModal extends Component {
             </i>
             <h4 style={{ paddingLeft: '35px' }}>{this.props.header}</h4>
             <p>{this.props.body}</p>
-            <p>Continue?</p>
+            <p>{this.props.endQuestion}</p>
             <hr />
-            <button
-              className="btn btn-flat red white-text btn-margin"
-              onClick={() => this.close(false)}
-            >
-              No
-            </button>
-            <button
-              className="btn btn-flat teal white-text btn-margin"
-              onClick={() => this.close(true)}
-            >
-              Yes
-            </button>
+            {this.showButton()}
           </div>
         </Modal>
       </div>

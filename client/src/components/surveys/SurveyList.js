@@ -10,7 +10,7 @@ let loadComplete = false;
 class SurveList extends Component {
   constructor() {
     super();
-    this.state = { open: false, surveyId: null };
+    this.state = { open: false, surveyId: null, surveyTitle: '' };
     this.closeModal = this.closeModal.bind(this);
   }
 
@@ -27,7 +27,7 @@ class SurveList extends Component {
     loadComplete = true;
   }
 
-  openModal = (surveyId) => this.setState({ open: true, surveyId });
+  openModal = (surveyId, surveyTitle) => this.setState({ open: true, surveyId, surveyTitle });
 
   closeModal(confirmed) {
     this.setState({ open: false });
@@ -44,7 +44,8 @@ class SurveList extends Component {
           closeModal={this.closeModal}
           open={this.state.open}
           header="Delete Survey"
-          body="This will delete the selected survey."
+          body={`This will permanently delete the survey '${this.state.surveyTitle}'.`}
+          endQuestion="Continue?"
         />);
     }
   }
@@ -78,7 +79,7 @@ class SurveList extends Component {
                 <a
                   style={{ color: 'white' }}
                   className="modal-trigger"
-                  onClick={this.openModal.bind(this, survey._id)}
+                  onClick={this.openModal.bind(this, survey._id, survey.title)}
                 >
                   close
                 </a>
