@@ -2,11 +2,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MicroBarChart from 'react-micro-bar-chart';
 
-import { fetchSurveys, showLoader } from '../../actions';
+import { fetchSurveys, showLoader, deleteSurvey } from '../../actions';
+import ConfirmModal from '../modals/ConfirmModal';
 
 let loadComplete = false;
 
 class SurveList extends Component {
+  constructor() {
+    super();
+    this.state = { open: false, surveyId: null };
+    this.closeModal = this.closeModal.bind(this);
+  }
+
   componentWillMount() {
     this.props.showLoader({ show: true, message: 'Loading surveys ...' });
   }
@@ -20,9 +27,35 @@ class SurveList extends Component {
     loadComplete = true;
   }
 
+  openModal = (surveyId) => this.setState({ open: true, surveyId });
+
+  closeModal(confirmed) {
+    this.setState({ open: false });
+
+    if (confirmed) {
+      this.props.deleteSurvey(this.state.surveyId);
+    }
+  }
+
+  displayModal() {
+    if (this.state.open === true) {
+      return (
+        <ConfirmModal
+          closeModal={this.closeModal}
+          open={this.state.open}
+          header="Delete Survey"
+          body="This will delete the selected survey."
+        />);
+    }
+  }
+
   renderSurveys() {
     if (!this.props.auth) {
-      return (<h5 style={{ display: 'none' }}>Test</h5>);
+      return (
+        <h5 style={{ display: 'none' }}>
+          Loading surveys ...
+      </h5>
+      );
     }
     else if (this.props.surveys.length < 1 && loadComplete === true) {
       return (
@@ -33,7 +66,7 @@ class SurveList extends Component {
       );
     }
 
-    return this.props.surveys.reverse().map(survey => {
+    return this.props.surveys.map(survey => {
       let dataArray = [survey.yes, survey.no];
 
       return (
@@ -41,7 +74,15 @@ class SurveList extends Component {
           <div className="card-content white-text">
             <span className="card-title">
               {survey.title}
-              <i className="right material-icons">mail_outline</i>
+              <i className="right material-icons">
+                <a
+                  style={{ color: 'white' }}
+                  className="modal-trigger"
+                  onClick={this.openModal.bind(this, survey._id)}
+                >
+                  close
+                </a>
+              </i>
             </span>
             <p>
               {survey.body}
@@ -65,6 +106,7 @@ class SurveList extends Component {
               />
             </a>
           </div>
+
         </div>
       );
     });
@@ -73,6 +115,7 @@ class SurveList extends Component {
   render() {
     return (
       <div>
+        {this.displayModal()}
         <ul>
           {this.renderSurveys()}
         </ul>
@@ -85,4 +128,4 @@ function mapStateToProps({ surveys, auth }) {
   return { surveys, auth };
 }
 
-export default connect(mapStateToProps, { fetchSurveys, showLoader })(SurveList);
+export default connect(mapStateToProps, { fetchSurveys, showLoader, deleteSurvey })(SurveList);

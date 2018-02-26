@@ -3,11 +3,13 @@ import _ from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+//import Payments from './Payments';
 
+//import ConfirmModal from '../modals/ConfirmModal';
 import formFields from './formFields';
 import * as actions from '../../actions';
 
-const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoader } /*instead of 'props'*/) => {
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoader, auth } /*instead of 'props'*/) => {
   const displayEmails = (name) => {
     let emailString = '';
 
@@ -33,9 +35,23 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoa
   });
 
   const submitClick = () => {
-    showLoader({ show: true, message: 'Sending survey...' });
-    submitSurvey(formValues, history);
+    if (auth.credits > 0) {
+      showLoader({ show: true, message: 'Sending survey...' });
+      submitSurvey(formValues, history);
+    }
+    else { }
   };
+
+  const showModal = () => {
+    /*return (
+      <ConfirmModal
+        closeModal={this.closeModal}
+        open={this.state.open}
+        header="Delete Survey"
+        body="This will delete the selected survey."
+      />
+    );*/
+  }
 
   return (
     <div>
@@ -53,12 +69,13 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history, showLoa
         Send Survey
         <i className="material-icons right">email</i>
       </button>
+      {showModal()}
     </div>
   );
 }
 
-function mapStateToProps({ form: { surveyForm } }) {
-  return { formValues: surveyForm.values };
+function mapStateToProps({ form: { surveyForm }, auth }) {
+  return { formValues: surveyForm.values, auth };
 }
 
 export default connect(mapStateToProps, actions)(withRouter(SurveyFormReview));

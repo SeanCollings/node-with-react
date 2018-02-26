@@ -16,7 +16,7 @@ export default app => {
     const surveys = await Survey.find({ _user: req.user.id })
       .select({ recipients: false });
 
-    res.send(surveys);
+    res.send(surveys.reverse());
   });
 
   app.get('/api/surveys/:surveyId/:choice', (req, res) => {
@@ -90,5 +90,19 @@ export default app => {
     } catch (err) {
       res.status(422).send(err);
     }
+  });
+
+  app.delete('/api/surveys/delete', requireLogin, async (req, res) => {
+    await Survey.findByIdAndRemove({
+      _id: req.query.surveyId, callback: (err, res) => {
+        if (err)
+          throw err;
+      }
+    });
+
+    const surveys = await Survey.find({ _user: req.user.id })
+      .select({ recipients: false });
+
+    res.send(surveys.reverse());
   });
 };
