@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import MicroBarChart from 'react-micro-bar-chart';
+import { Link } from 'react-router-dom';
 
 import { fetchSurveys, showLoader, deleteSurvey } from '../../actions';
 import ConfirmModal from '../modals/ConfirmModal';
@@ -10,21 +11,41 @@ let loadComplete = false;
 class SurveList extends Component {
   constructor() {
     super();
-    this.state = { open: false, surveyId: null, surveyTitle: '' };
+    this.state = {
+      open: false,
+      surveyId: null,
+      surveyTitle: '',
+      mobileWidth: false
+    };
     this.closeModal = this.closeModal.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
   }
 
   componentWillMount() {
     this.props.showLoader({ show: true, message: 'Loading surveys ...' });
   }
 
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+
   componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
     this.props.fetchSurveys();
   }
 
   componentDidUpdate() {
     this.props.showLoader({ show: false });
     loadComplete = true;
+  }
+
+  updateDimensions() {
+    if (window.innerWidth < 520) {
+      this.setState({ mobileWidth: true });
+    } else {
+      this.setState({ mobileWidth: false });
+    }
   }
 
   openModal = (surveyId, surveyTitle) => this.setState({ open: true, surveyId, surveyTitle });
@@ -48,6 +69,10 @@ class SurveList extends Component {
           endQuestion="Continue?"
         />);
     }
+  }
+
+  btnResendClick(surveyId) {
+    console.log('test', surveyId);
   }
 
   renderSurveys() {
@@ -99,15 +124,23 @@ class SurveList extends Component {
           <div className="card-action">
             <a>Yes: {survey.yes}</a>
             <a>No: {survey.no}</a>
-            <a>
+            <a style={{ marginRight: '0px' }}>
               <MicroBarChart
                 data={dataArray}
                 hoverColor="#ffd8a6"
                 fillColor="#ffab40"
+                width={this.state.mobileWidth ? 50 : 100}
               />
             </a>
+            <Link
+              className="right"
+              style={{ marginRight: '0px' }}
+              to={`/surveys/new?cloneId=${survey._id}`}
+              onClick={this.btnResendClick.bind(this, survey._id)}
+            >
+              clone
+            </Link>
           </div>
-
         </div>
       );
     });

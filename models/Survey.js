@@ -6,6 +6,7 @@ const surveySchema = new Schema({
   body: String,
   subject: String,
   field: String,
+  saved: { type: Boolean, default: false },
   recipients: [RecipientSchema],
   yes: { type: Number, default: 0 },
   no: { type: Number, default: 0 },

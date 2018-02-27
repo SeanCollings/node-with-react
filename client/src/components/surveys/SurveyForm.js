@@ -26,7 +26,9 @@ class SurveyForm extends Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit /*() => this.props.onSur()*/)}>
+        <form
+          style={{ marginBottom: '10px' }}
+          onSubmit={this.props.handleSubmit(this.props.onSurveySubmit /*() => this.props.onSur()*/)}>
           {this.renderFields()}
           <Link to="/surveys" className="red btn btn-flat white-text">
             Cancel

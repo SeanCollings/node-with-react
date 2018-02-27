@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import TagsInput from 'react-tagsinput';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import 'react-tagsinput/react-tagsinput.css';
 import './SurveyField.css';
+import { getSurvey } from '../../actions';
 
 class SurveyField extends Component {
   errorStyle = () => ({
@@ -47,6 +50,12 @@ class SurveyField extends Component {
   render() {
     const { label } = this.props;
 
+    const parsed = new URLSearchParams(this.props.location.search);
+    const cloneId = parsed.get('cloneId');
+    console.log(cloneId);
+
+    this.props.getSurvey(cloneId);
+
     return (
       <div>
         <label>{label}</label>
@@ -59,4 +68,8 @@ class SurveyField extends Component {
   }
 }
 
-export default SurveyField;
+function mapStateToProps({ surveys }) {
+  return { surveys };
+}
+
+export default connect(mapStateToProps, { getSurvey })(withRouter(SurveyField));

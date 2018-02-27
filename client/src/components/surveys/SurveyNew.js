@@ -6,7 +6,7 @@ import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
 
 class SurveyNew extends Component {
-  // Using babel to condense construtor into below
+  // Using babel to condense constructor into below
   state = { showFormReview: false };
 
   renderContent() {
